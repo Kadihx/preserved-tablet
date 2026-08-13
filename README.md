@@ -1,107 +1,141 @@
 # The Preserved Tablet
 
-Universal Codebase Memory & Diagramming Framework — herhangi bir projeye
-plug-and-play eklenebilen, local ve graph-native bir AI hafiza sistemi.
-Amac: Claude Code'un (veya baska bir AI kod asistaninin) tum codebase'i her
-seferinde baştan taramak yerine, `.memory/` dizinindeki ozetlenmis baglami
-okuyarak token tuketimini dramatik sekilde azaltmasi.
+**Universal Codebase Memory & Diagramming Framework.**
+A plug-and-play, local, graph-native memory system for AI coding agents.
 
-> **Durum: Faz 3 (MVP)** — dizin iskeleti, initialization, AI rulebook,
-> chokidar tabanli watcher, AST/graph motoru, otomatik SVG/HTML diyagram
-> uretimi ve gercek AFFiNE'e import edilebilir canvas.md uretimi tamamlandi.
+Drop it into any project and it keeps a living, structured summary of your
+codebase in `.memory/` — so Claude Code (or any other AI coding assistant)
+reads a compact, pre-digested context instead of re-scanning your entire
+repository on every task. Less token spend, faster answers, and an
+architecture diagram that stays in sync with your code.
 
-## Kurulum
+> **Status: Phase 3 (MVP)** — package scaffold, initialization, AI rulebook,
+> chokidar-based watcher, a real AST/graph engine, automatic theme-aware
+> SVG/HTML diagrams, and a Markdown bridge into a real AFFiNE canvas are all
+> working end to end.
+
+## Why
+
+AI coding agents burn a huge amount of context re-reading files just to
+rebuild a mental model of the project they're already working in. The
+Preserved Tablet keeps that mental model on disk, refreshed incrementally,
+so the agent can read one small file (`.memory/context.md`) instead of
+grepping the whole tree.
+
+## Install
 
 ```bash
 npm install preserved-tablet
 ```
 
-Kurulum sirasinda `postinstall` hook'u projenizin kokune su dosyalari
-olusturur (mevcut dosyalarin uzerine ASLA yazmaz):
+(Or straight from this repo, before an npm registry release:
+`npm install github:Kadihx/preserved-tablet`.)
+
+On install, the `postinstall` hook scaffolds these files at your project
+root — and **never overwrites ones that already exist**:
 
 ```
-.memory/context.md          # AI'nin okuyacagi birincil baglam (git'e commit edilir)
-.memory/ai-rules.md         # AI davranis kurallari (git'e commit edilir)
-.memory/graph-map.json      # otomatik uretilen graph verisi (gitignore)
-.claude/rules/preserved-tablet.md   # Claude Code tarafindan otomatik kesfedilir
+.memory/context.md                  # primary context for AI agents (commit this)
+.memory/ai-rules.md                 # behavior rules for AI agents (commit this)
+.memory/graph-map.json              # generated graph data (gitignored)
+.claude/rules/preserved-tablet.md   # auto-discovered by Claude Code
 ```
 
-`postinstall` **sadece** bu dosyalari olusturur; arka planda hicbir process
-baslatmaz (npm v12'nin lifecycle script'lerini varsayilan olarak engellemesi
-ve CI/guvenlik-tarayici riskleri nedeniyle bilinçli bir tercih).
+`postinstall` **only** scaffolds — it never spawns a background process.
+That's a deliberate choice: npm now blocks lifecycle scripts by default in
+many setups, and security scanners flag postinstall-spawned daemons as a
+supply-chain-attack pattern. See [Usage](#usage) for how the watcher
+actually starts.
 
-Ilk `sync`/`watch` calistiginda ayrica su dosyalar uretilir:
+The first `sync`/`watch` run additionally produces:
 
 ```
-.memory/diagram.svg         # tema-duyarli (acik/koyu) mimari haritasi (gitignore)
-.memory/diagram.html        # diagram.svg'nin tarayicida acilabilir sarmalayicisi (gitignore)
-.memory/canvas.md           # gercek AFFiNE'e import edilebilir, diyagrami gomen not (gitignore)
+.memory/diagram.svg   # theme-aware (light/dark) architecture diagram (gitignored)
+.memory/diagram.html  # browser-friendly wrapper around diagram.svg (gitignored)
+.memory/canvas.md     # Markdown importable into a real AFFiNE workspace (gitignored)
 ```
 
-## Kullanim
+## Usage
 
-### Vibe coding sirasinda (onerilen akis)
+### While vibe-coding (recommended flow)
 
-Claude Code sohbetinde `"hafizaya kaydet"` (veya `"memory guncelle"`, `"save
-to memory"`) deyin. `.memory/ai-rules.md` talimati geregi Claude bunu gorunce
-kendisi `npx preserved-tablet sync` komutunu calistirir; bu tek komut
-`graph-map.json`'i (gercek AST analiziyle), `context.md` ozetini,
-`diagram.svg`/`diagram.html`'i VE `canvas.md`'yi gunceller. Elle bir arka
-plan sureci baslatmaniza gerek yoktur.
+Just say **"save to memory"** (or "update memory", "sync memory") in your
+Claude Code chat. Per `.memory/ai-rules.md`, Claude runs
+`npx preserved-tablet sync` itself — one command that refreshes
+`graph-map.json` (real AST analysis), the `context.md` summary,
+`diagram.svg`/`diagram.html`, and `canvas.md`. No background process to
+babysit.
 
-### Gercek AFFiNE'de canvas gorunumu
+### Viewing the canvas in real AFFiNE
 
-`.memory/canvas.md` dosyasini kendi kurulu AFFiNE uygulamaniza (masaustu
-veya self-hosted web) surukleyip birakin (Import > Markdown). Icinde
-diyagram gorseli gomulu gelir. Import sonrasi sayfayi sag ustten **Edgeless**
-moduna gecirerek mekansal/canvas gorunumde kesfedebilirsiniz. BlockSuite'in
-(AFFiNE'in canvas motoru) canli editorunu dogrudan gommek yerine bu yolu
-sectik — nedeni icin `canvas-engine/README.md`'ye bakin.
+Drag `.memory/canvas.md` into your own installed [AFFiNE](https://affine.pro)
+workspace (Import → Markdown). It arrives with the architecture diagram
+embedded. Flip the page to **Edgeless** mode (top-right) for the spatial,
+whiteboard-style view. See [`canvas-engine/README.md`](canvas-engine/README.md)
+for why we bridge into real AFFiNE instead of embedding an editor ourselves.
 
-### CLI komutlari
+### CLI commands
 
 ```bash
-npx preserved-tablet init     # .memory/ ve kural dosyalarini olusturur (idempotent)
-npx preserved-tablet sync     # tam-proje AST taramasi; graph-map.json + context.md + diagram + canvas.md'yi gunceller
-npx preserved-tablet diagram  # yeniden taramadan, mevcut graph-map.json'dan context.md + diagram + canvas.md'yi tazeler
-npx preserved-tablet watch    # surekli izleme (foreground, Ctrl+C ile durur)
-npx preserved-tablet start    # surekli izlemeyi arka planda baslatir (pid dosyali)
-npx preserved-tablet stop     # arka plandaki watcher'i durdurur
+npx preserved-tablet init     # scaffold .memory/ + rule files (idempotent)
+npx preserved-tablet sync     # full-project AST scan; updates graph, context, diagram, canvas.md
+npx preserved-tablet diagram  # re-renders context/diagram/canvas.md from the existing graph, no rescan
+npx preserved-tablet watch    # continuous watching (foreground, Ctrl+C to stop)
+npx preserved-tablet start    # continuous watching in the background (pid-tracked)
+npx preserved-tablet stop     # stop the background watcher
 ```
 
-## Dizin yapisi
+## Directory structure
 
 ```
 preserved-tablet/
 ├── bin/cli.js              # init | sync | diagram | watch | start | stop
-├── scripts/postinstall.js  # sadece scaffold, watcher baslatmaz
-├── lib/                    # paylasilan yardimcilar (paths, scaffold, template render, CI algilama)
-│   └── graph/               # AST parse, import cozumleme, graph insasi, context.md uretimi
-├── templates/              # tuketici projeye kopyalanan sablonlar (ai-rules.md tek kaynak)
-├── watcher/                 # chokidar tabanli izleme + proje tarama + tek-seferlik sync + opsiyonel daemon
-├── diagram-engine/          # doğrulanmis paletle SVG/HTML mimari haritasi uretimi
-└── canvas-engine/           # AFFiNE'e import edilebilir Markdown uretimi (bkz. canvas-engine/README.md)
+├── scripts/postinstall.js  # scaffold only — never starts the watcher
+├── lib/                    # shared helpers (paths, scaffold, template render, CI detection)
+│   └── graph/                # AST parsing, import resolution, graph building, context.md rendering
+├── templates/               # templates copied into the consumer project (ai-rules.md is the source of truth)
+├── watcher/                  # chokidar watching + project walk + one-shot sync + optional daemon
+├── diagram-engine/           # validated-palette SVG/HTML architecture diagram
+└── canvas-engine/            # Markdown bridge into a real AFFiNE workspace
 ```
 
-## Graph semasi (`.memory/graph-map.json`)
+## Graph schema (`.memory/graph-map.json`)
 
-- **Dugum turleri:** `file`, `function`, `class`.
-- **Kenar turleri:** `imports` (dosya→dosya, sadece goreceli/yerel importlar
-  cozulur — npm paketleri harici bagimlilik kabul edilir ve dugum olarak
-  temsil edilmez), `contains` (dosya→fonksiyon/sinif).
-- Diyagram sadece `file` dugumlerini gosterir (okunabilirlik icin); ince
-  taneli fonksiyon/sinif bilgisi graph JSON'unda kalir.
-- Cagri-grafigi (hangi fonksiyon hangisini cagiriyor) kapsam disidir.
+- **Node types:** `file`, `function`, `class`.
+- **Edge types:** `imports` (file → file — only relative/local imports are
+  resolved; npm packages are treated as external and never become nodes),
+  `contains` (file → function/class).
+- The diagram only renders `file` nodes, for readability; fine-grained
+  function/class data stays in the graph JSON for Claude to read.
+- Call-graph analysis (which function calls which) is out of scope.
 
-## Yol haritasi
+## Roadmap
 
-- **Faz 1 (tamamlandi):** iskelet, initialization, AI rulebook, watcher.
-- **Faz 2 (tamamlandi):** AST/graph motoru (`lib/graph/`) — `graph-map.json`'in
-  `nodes`/`edges` alanlarinin gercek statik analizle doldurulmasi;
-  `context.md`'nin otomatik ozetlenmesi; `diagram-engine/`'in editoryal
-  kalitede, tema-duyarli SVG/HTML diyagramlar uretmesi.
-- **Faz 3 (MVP tamamlandi):** `canvas-engine/` — graph semasindan gercek
-  AFFiNE'e import edilebilir bir Markdown notu (`canvas.md`) uretimi.
-  BlockSuite'in canli editorunun dogrudan gomulmesi (daha derin ama kirilgan
-  bir entegrasyon) bilincli olarak kapsam disi birakildi — gerekce ve
-  gelecek secenekler icin `canvas-engine/README.md`'ye bakin.
+- **Phase 1 (done):** scaffold, initialization, AI rulebook, watcher.
+- **Phase 2 (done):** AST/graph engine (`lib/graph/`) — real static analysis
+  populates `graph-map.json`'s `nodes`/`edges`; `context.md` auto-summarizes;
+  `diagram-engine/` renders an editorial-quality, theme-aware SVG/HTML diagram.
+- **Phase 3 (MVP done):** `canvas-engine/` — turns the graph into a
+  Markdown note importable into real AFFiNE. Embedding BlockSuite's live
+  editor directly (deeper, but far more fragile) was deliberately deferred —
+  see [`canvas-engine/README.md`](canvas-engine/README.md).
+
+## Acknowledgements
+
+This project stands on the shoulders of some excellent open-source work:
+
+- **[chokidar](https://github.com/paulmillr/chokidar)** — the file-watching
+  engine behind `preserved-tablet watch`/`start`.
+- **[Babel](https://github.com/babel/babel)** (`@babel/parser`,
+  `@babel/traverse`) — the real AST parsing that powers the graph engine;
+  without it this would just be regex guessing at imports.
+- **[BlockSuite](https://github.com/toeverything/blocksuite) & [AFFiNE](https://github.com/toeverything/AFFiNE)**
+  (by the [toeverything](https://github.com/toeverything) team) — the
+  canvas/whiteboard engine this project bridges into via `canvas.md`. Go
+  check out [affine.pro](https://affine.pro) — it's a genuinely excellent
+  local-first workspace app, and this project is only a small importer into
+  it, not a replacement for it.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

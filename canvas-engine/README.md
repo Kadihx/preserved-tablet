@@ -1,37 +1,43 @@
-# canvas-engine (Faz 3 — import-tabanli MVP)
+# canvas-engine (import-based MVP)
 
-## Tasarim karari
+## Design decision
 
-Vizyon dokumaninda "AFFiNE'in canvas motorunu kullanan" bir entegrasyon
-istendi. AFFiNE'in canvas motoru gercekten npm'de acik kaynak olarak
-mevcut: **BlockSuite** (`@blocksuite/presets`, `@blocksuite/blocks`,
-`@blocksuite/store` — hepsi AFFiNE'in kendi GitHub organizasyonu
-`toeverything` tarafindan yayinlaniyor).
+The original vision called for an integration that uses "AFFiNE's canvas
+engine." That engine genuinely exists as an open-source, npm-installable
+library: **BlockSuite** (`@blocksuite/presets`, `@blocksuite/blocks`,
+`@blocksuite/store` — all published by AFFiNE's own GitHub organization,
+[`toeverything`](https://github.com/toeverything)).
 
-Ancak BlockSuite'in CANLI editorunu (`AffineEditorContainer` /
-`EdgelessEditor`) dogru sekilde DOM'a gommek, AFFiNE'in kendi resmi starter
-ornegine (`packages/playground/apps/starter`) gore su ic API'leri yeniden
-kurmayi gerektiriyor: `SpecProvider`, extension/DI sistemi,
-`DocModeProvider`/`NotificationExtension`/`ParseDocUrlExtension` gibi mock
-servisler, font/tema extension'lari. Bu, AFFiNE'in kendi uygulama
-plumbing'inin onemli bir kismini yeniden uretmek anlamina geliyor — kirilgan
-(surum degisikliklerine karsi hassas) ve orantisiz derecede agir.
+However, correctly mounting BlockSuite's *live* editor component
+(`AffineEditorContainer` / `EdgelessEditor`) means re-wiring a meaningful
+slice of AFFiNE's own internal app plumbing — per AFFiNE's official starter
+example (`packages/playground/apps/starter`), that includes `SpecProvider`,
+the extension/DI system, and mock services for `DocModeProvider`,
+`NotificationExtension`, `ParseDocUrlExtension`, plus font/theme extensions.
+That's disproportionate effort for an MVP, and fragile across BlockSuite
+version bumps.
 
-**Bunun yerine:** `generate-markdown.js`, graph-map.json'dan gercek AFFiNE'e
-**import edilebilir bir Markdown dosyasi** (`.memory/canvas.md`) uretir —
-diyagram gorseli gomulu (base64 data URI), dizin/dosya/fonksiyon/sinif
-dokumu ile. Kullanici bu dosyayi KENDI kurulu AFFiNE uygulamasina (masaustu
-veya self-hosted web) surukleyip birakir; AFFiNE'in yerlesik **Page ->
-Edgeless** gecisi sayfa'yi mekansal/canvas gorunume cevirir.
+**Instead:** `generate-markdown.js` turns `graph-map.json` into a Markdown
+file (`.memory/canvas.md`) that a **real AFFiNE instance can import
+directly** — architecture diagram embedded as a base64 image, plus a
+directory/file/function/class breakdown. Drag that file into your own
+(already-installed) AFFiNE workspace, then flip the page to AFFiNE's
+built-in **Page → Edgeless** mode for the spatial canvas view.
 
-Bu yaklasim: fork gerektirmiyor, kirilgan ic API'ye baglanmiyor, ve
-kullanicinin GERCEK AFFiNE deneyimini (kendi workspace'i, kendi
-senkronizasyonu, kendi UI'i) kullanmasini sagliyor.
+This approach needs no fork and no dependency on an unstable internal API,
+and it puts you in your actual AFFiNE app — your workspace, your sync, your
+UI.
 
-## Gelecek (opsiyonel, kapsam disi)
+## Future (optional, out of scope for now)
 
-Eger ileride canli/gomulu bir editor gercekten istenirse, bunun icin ayri
-bir Vite tabanli mini-uygulama (bu paketten bagimsiz, `npm create vite`
-ile baslatilan) kurulmasi ve AFFiNE'in starter ornegindeki extension
-zincirinin dikkatlice port edilmesi gerekir. Bu, mevcut MVP'nin kasitli
-olarak ertelendigi, ayri ve daha buyuk bir is parcasidir.
+If a live, embedded editor is genuinely wanted later, that calls for a
+separate Vite-based mini app (independent of this package, bootstrapped with
+`npm create vite`) that carefully ports the extension chain from AFFiNE's
+starter example. That's a distinct, larger undertaking, deliberately
+deferred from this MVP.
+
+## Acknowledgements
+
+This module exists thanks to [BlockSuite](https://github.com/toeverything/blocksuite)
+and [AFFiNE](https://github.com/toeverything/AFFiNE) — see the root
+[README's Acknowledgements](../README.md#acknowledgements) section.

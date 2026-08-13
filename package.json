@@ -1,10 +1,18 @@
 {
   "name": "preserved-tablet",
   "version": "0.1.0",
-  "description": "Universal Codebase Memory & Diagramming Framework — Claude Code icin local, graph-native bir proje hafizasi.",
+  "description": "Universal Codebase Memory & Diagramming Framework — a plug-and-play, local, graph-native project memory for AI coding agents like Claude Code.",
   "license": "MIT",
   "author": "",
-  "keywords": ["claude-code", "ai-memory", "codebase-context", "chokidar", "developer-tools"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kadihx/preserved-tablet.git"
+  },
+  "homepage": "https://github.com/Kadihx/preserved-tablet#readme",
+  "bugs": {
+    "url": "https://github.com/Kadihx/preserved-tablet/issues"
+  },
+  "keywords": ["claude-code", "ai-memory", "codebase-context", "chokidar", "developer-tools", "affine", "blocksuite"],
   "engines": {
     "node": ">=16.14"
   },
