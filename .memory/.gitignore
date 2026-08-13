@@ -1,0 +1,8 @@
+# preserved-tablet: otomatik uretilen/sik degisen dosyalar gitignore edilir.
+# context.md ve ai-rules.md BILEREK burada YOK -- onlar commit edilir.
+graph-map.json
+diagram.svg
+diagram.html
+canvas.md
+watcher.pid
+watcher.log

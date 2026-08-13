@@ -1,0 +1,29 @@
+# Proje Hafizasi (The Preserved Tablet)
+
+> Bu dosya `.memory/context.md` olarak preserved-tablet tarafindan olusturuldu.
+> Ilk olusturulma: {{GENERATED_AT}}
+>
+> AI asistanlarin bu projeyi anlamasi icin BIRINCIL baglam kaynagidir.
+> Okuma/kullanim kurallari icin bkz. `.memory/ai-rules.md`.
+
+## Durum
+
+Bu dosya henuz Faz 1 (scaffold) asamasindadir. Asagidaki bolumler, Faz 2'de
+devreye girecek Semantica AST/graph motoru tarafindan otomatik
+doldurulacaktir:
+
+- **Proje Ozeti** — henuz uretilmedi.
+- **Mimari Genel Bakis** — henuz uretilmedi.
+- **Ana Modul/Dosya Haritasi** — henuz uretilmedi (bkz. `.memory/graph-map.json`).
+- **Bilinen Bagimliliklar** — henuz uretilmedi.
+
+Guncellemek icin: `npx preserved-tablet sync` calistirin ya da Claude Code
+sohbetinde "hafizaya kaydet" deyin.
+
+<!-- HUMAN-NOTES-START -->
+## Insan Notlari
+
+(Bu bolumu serbestce duzenleyebilirsiniz — otomatik uretim bu bolume
+dokunmaz. Onemli mimari kararlari, kisitlari veya baglami buraya elle
+ekleyebilirsiniz.)
+<!-- HUMAN-NOTES-END -->

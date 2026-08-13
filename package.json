@@ -1,0 +1,36 @@
+{
+  "name": "preserved-tablet",
+  "version": "0.1.0",
+  "description": "Universal Codebase Memory & Diagramming Framework — Claude Code icin local, graph-native bir proje hafizasi.",
+  "license": "MIT",
+  "author": "",
+  "keywords": ["claude-code", "ai-memory", "codebase-context", "chokidar", "developer-tools"],
+  "engines": {
+    "node": ">=16.14"
+  },
+  "bin": {
+    "preserved-tablet": "bin/cli.js"
+  },
+  "main": "watcher/index.js",
+  "files": [
+    "bin",
+    "scripts",
+    "lib",
+    "templates",
+    "watcher",
+    "canvas-engine",
+    "diagram-engine",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js",
+    "sync": "node bin/cli.js sync",
+    "watch": "node bin/cli.js watch"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.1",
+    "@babel/parser": "^7.26.0",
+    "@babel/traverse": "^7.26.0"
+  }
+}
