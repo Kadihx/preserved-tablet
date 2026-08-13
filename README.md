@@ -9,10 +9,10 @@ reads a compact, pre-digested context instead of re-scanning your entire
 repository on every task. Less token spend, faster answers, and an
 architecture diagram that stays in sync with your code.
 
-> **Status: Phase 3 (MVP)** — package scaffold, initialization, AI rulebook,
+> **Status: Phase 4 (MVP)** — package scaffold, initialization, AI rulebook,
 > chokidar-based watcher, a real AST/graph engine, automatic theme-aware
-> SVG/HTML diagrams, and a Markdown bridge into a real AFFiNE canvas are all
-> working end to end.
+> SVG/HTML diagrams, a Markdown bridge into a real AFFiNE canvas, and a
+> local multi-project dashboard are all working end to end.
 
 ## Why
 
@@ -74,15 +74,38 @@ embedded. Flip the page to **Edgeless** mode (top-right) for the spatial,
 whiteboard-style view. See [`canvas-engine/README.md`](canvas-engine/README.md)
 for why we bridge into real AFFiNE instead of embedding an editor ourselves.
 
+### The central dashboard
+
+Every project you run `init` (or install into) on registers itself in a
+per-user registry at `~/.preserved-tablet/projects.json` — no extra step.
+Run this from *any one* of those projects (or from a global install) to see
+all of them in one place:
+
+```bash
+npx preserved-tablet dashboard
+```
+
+This starts a small local web server (plain Node `http`, no framework, no
+new dependency) at `http://127.0.0.1:4317` and opens it in your browser.
+Each registered project shows up as its own card — folder, name, last-sync
+status, a live diagram thumbnail. **It binds to `127.0.0.1` only, never to
+your network** — nothing here is reachable by anyone else on your Wi-Fi.
+
+Sharing is a deliberately simple, one-click **file export**: each card has a
+"Download" button that hands you that project's self-contained
+`diagram.html` (the same file already sitting in `.memory/`) — send it over
+Slack, email, whatever. No hosting, no server-side state, no accounts.
+
 ### CLI commands
 
 ```bash
-npx preserved-tablet init     # scaffold .memory/ + rule files (idempotent)
-npx preserved-tablet sync     # full-project AST scan; updates graph, context, diagram, canvas.md
-npx preserved-tablet diagram  # re-renders context/diagram/canvas.md from the existing graph, no rescan
-npx preserved-tablet watch    # continuous watching (foreground, Ctrl+C to stop)
-npx preserved-tablet start    # continuous watching in the background (pid-tracked)
-npx preserved-tablet stop     # stop the background watcher
+npx preserved-tablet init      # scaffold .memory/ + rule files (idempotent); registers the project in the dashboard
+npx preserved-tablet sync      # full-project AST scan; updates graph, context, diagram, canvas.md
+npx preserved-tablet diagram   # re-renders context/diagram/canvas.md from the existing graph, no rescan
+npx preserved-tablet watch     # continuous watching (foreground, Ctrl+C to stop)
+npx preserved-tablet start     # continuous watching in the background (pid-tracked)
+npx preserved-tablet stop      # stop the background watcher
+npx preserved-tablet dashboard # local multi-project overview at http://127.0.0.1:4317
 ```
 
 ## Directory structure
@@ -96,7 +119,8 @@ preserved-tablet/
 ├── templates/               # templates copied into the consumer project (ai-rules.md is the source of truth)
 ├── watcher/                  # chokidar watching + project walk + one-shot sync + optional daemon
 ├── diagram-engine/           # validated-palette SVG/HTML architecture diagram
-└── canvas-engine/            # Markdown bridge into a real AFFiNE workspace
+├── canvas-engine/            # Markdown bridge into a real AFFiNE workspace
+└── dashboard/                # local (127.0.0.1-only) multi-project overview server
 ```
 
 ## Graph schema (`.memory/graph-map.json`)
@@ -119,6 +143,15 @@ preserved-tablet/
   Markdown note importable into real AFFiNE. Embedding BlockSuite's live
   editor directly (deeper, but far more fragile) was deliberately deferred —
   see [`canvas-engine/README.md`](canvas-engine/README.md).
+- **Phase 4 (MVP done):** `dashboard/` — a `127.0.0.1`-only local web server
+  that lists every registered project as a card (name, path, sync status,
+  diagram thumbnail), with one-click file export for sharing.
+- **Future ideas (not started):**
+  - Beyond schematics: AI-assisted **detailed blueprint and roadmap
+    documents** generated from the graph — not just a visual diagram, but a
+    structured written plan of the architecture and where it's headed.
+  - Real Semantica-style call-graph analysis (which function calls which).
+  - Incremental graph updates instead of a full re-parse on every change.
 
 ## Acknowledgements
 

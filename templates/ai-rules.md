@@ -86,3 +86,11 @@ workspace'ine surukleyip birakir, sonra sayfayi Edgeless (canvas) moduna
 gecirir. Kullanici "canvas'i ac" gibi bir istek belirtirse ona
 `.memory/canvas.md` dosyasinin yolunu ve bu akisi hatirlat; kendi basina bir
 uygulama baslatmaya CALISMA.
+
+## 8. Merkezi panel (Faz 4 — aktif)
+
+Kullanici "tum projelerimi gor", "panel ac" gibi bir istek belirtirse:
+`npx preserved-tablet dashboard` komutunu Bash ile calistir (arka planda
+kalici bir sure baslatir, `http://127.0.0.1:4317` adresini acar). Bu panel
+SADECE `127.0.0.1`'de dinler; ag/internete acik degildir. `init` calistirilan
+her proje otomatik olarak bu panele kaydolur, ekstra bir adim gerekmez.

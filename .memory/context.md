@@ -1,27 +1,28 @@
 # Proje Hafizasi (The Preserved Tablet)
 
 > Bu dosya `.memory/context.md` olarak preserved-tablet tarafindan otomatik guncellenir.
-> Son guncelleme: 2026-08-13T11:17:58.851Z
+> Son guncelleme: 2026-08-13T14:20:00.017Z
 >
 > AI asistanlarin bu projeyi anlamasi icin BIRINCIL baglam kaynagidir.
 > Okuma/kullanim kurallari icin bkz. `.memory/ai-rules.md`.
 
 ## Proje Ozeti
 
-- Toplam dosya: **31**
-- Toplam fonksiyon: **43**, sinif: **0**
-- Proje-ici import iliskisi: **30**
-- Son senkronizasyon: 2026-08-13T11:17:58.848Z (durum: parsed)
+- Toplam dosya: **34**
+- Toplam fonksiyon: **60**, sinif: **0**
+- Proje-ici import iliskisi: **35**
+- Son senkronizasyon: 2026-08-13T14:20:00.010Z (durum: parsed)
 
 ## Dizin Dagilimi
 
 - `watcher/` — 6 dosya
 - `(kok)/` — 5 dosya
+- `lib/` — 5 dosya
 - `lib/graph/` — 5 dosya
-- `lib/` — 4 dosya
 - `templates/` — 4 dosya
 - `diagram-engine/` — 3 dosya
 - `canvas-engine/` — 2 dosya
+- `dashboard/` — 2 dosya
 - `bin/` — 1 dosya
 - `scripts/` — 1 dosya
 
@@ -34,14 +35,14 @@
 
 ## En Cok Ic-Import Yapan Dosyalar
 
-- `bin/cli.js` — 6 ic import
+- `bin/cli.js` — 7 ic import
 - `watcher/graph-updater.js` — 6 ic import
 - `lib/graph/regenerate-artifacts.js` — 3 ic import
+- `lib/scaffold.js` — 3 ic import
 - `watcher/index.js` — 3 ic import
 - `watcher/sync.js` — 3 ic import
+- `dashboard/server.js` — 2 ic import
 - `lib/graph/build-graph.js` — 2 ic import
-- `lib/scaffold.js` — 2 ic import
-- `scripts/postinstall.js` — 2 ic import
 
 ## Ana Modul/Dosya Haritasi
 
