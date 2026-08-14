@@ -7,9 +7,15 @@ azaltmak.
 
 ## 1. Okuma sirasi (ZORUNLU)
 
-1. `.memory/context.md` — birincil baglam kaynagi, once bu okunur.
+1. `.memory/context.md` — birincil baglam kaynagi, once bu okunur. Icerdigi
+   bolumler: Proje Ozeti, Tech Stack (package.json'dan), Dizin Dagilimi,
+   Olasi Giris Noktalari, En Cok Ic-Import Yapan Dosyalar, ve Dosya
+   Aciklamalari (kaynak koddaki yorumlardan cikarilmis, dosya basina tek
+   satirlik ozet).
 2. `.memory/graph-map.json` — dosyalar/modüller arasi kesin import-export-cagri
-   iliskileri gerektiginde.
+   iliskileri gerektiginde, ya da bir dosya/fonksiyon/sinifin `description`
+   alanini gormek icin (context.md'deki "Dosya Aciklamalari" MAX_DESCRIBED_FILES
+   ile sinirlidir; tam liste burada).
 3. `package.json` / `README.md` — sadece ust duzey oryantasyon icin.
 4. Yalnizca 1-3 adimlarindan sonra: goreve doğrudan ilgili tekil kaynak dosyalar.
 
@@ -18,6 +24,12 @@ azaltmak.
 Bir gorevin ilk adimi olarak repo genelinde recursive okuma/glob/grep YAPMA.
 `.memory/` tam olarak bu amac icin var; onu atlayip dogrudan dosya sistemini
 taramak bu framework'un tum amacini bosa cikarir.
+
+**Bu, `context.md`'deki bir dosya/fonksiyon aciklamasini "dogrulamak" icin o
+dosyayi acmayi da kapsar.** Aciklamalar statik yorum-cikarma ile uretildi;
+kesin dogru olmayabilirler ama "hicbir fikrim yok" durumundan cok daha
+iyidir. Gorev o dosyayi DEGISTIRMEYI gerektirmiyorsa, sadece anlamak icin
+teyit amacli acma -- bu tam olarak onlemeye calistigimiz token israfidir.
 
 ## 3. Fallback — tam tarama ne zaman serbest
 

@@ -125,7 +125,10 @@ preserved-tablet/
 
 ## Graph schema (`.memory/graph-map.json`)
 
-- **Node types:** `file`, `function`, `class`.
+- **Node types:** `file`, `function`, `class` — each optionally carries a
+  short `description` extracted from its leading source comment (JSDoc or
+  `//` block), so Claude can often answer "what does this do" straight from
+  the graph, without opening the file.
 - **Edge types:** `imports` (file → file — only relative/local imports are
   resolved; npm packages are treated as external and never become nodes),
   `contains` (file → function/class).
@@ -146,6 +149,14 @@ preserved-tablet/
 - **Phase 4 (MVP done):** `dashboard/` — a `127.0.0.1`-only local web server
   that lists every registered project as a card (name, path, sync status,
   diagram thumbnail), with one-click file export for sharing.
+- **Phase 5 (done):** cut the token cost of the *first* time an agent
+  understands a project. `sync` now extracts leading comments into a
+  `description` per file/function/class node (zero LLM calls — pure static
+  analysis), and `context.md` gained a `package.json`-derived **Tech Stack**
+  section and a **File Descriptions** list. `ai-rules.md` now explicitly
+  tells agents not to re-open a file just to double-check a description
+  already in `context.md`. Goal: an agent's first message in a project
+  should rarely need to read source files just to build a mental model.
 - **Future ideas (not started):**
   - Beyond schematics: AI-assisted **detailed blueprint and roadmap
     documents** generated from the graph — not just a visual diagram, but a
